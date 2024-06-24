@@ -84,7 +84,7 @@
      - 키워드가 포함된 할 일이 없을 경우, "검색 결과가 없습니다." 메시지를 출력합니다.
 5. 향상된 출력 기능
    - 출력 시, 아래와 같은 포맷으로 출력합니다.
-     ![image](https://github.com/lehdqlsl/java-todo-list/assets/7637916/29fbe7fd-09be-4996-beaa-cfffc4b92fc2)
+   - ![image](https://github.com/lehdqlsl/java-todo-list/assets/7637916/29fbe7fd-09be-4996-beaa-cfffc4b92fc2)
 
 - 힌트
   - 정렬 기능은 Collections.sort 메소드를 활용합니다.
