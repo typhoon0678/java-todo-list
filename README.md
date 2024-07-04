@@ -1,5 +1,8 @@
 # java-todo-list
 
+## 코드리뷰 가이드
+[링크](https://github.com/next-step/nextstep-docs/blob/master/codereview/README.md)
+
 ## 공통 프로그래밍 요구사항
 1. 코드의 가독성과 유지보수성을 높이기 위해 클래스와 메소드를 분리하여 개발합니다.
 2. 예외 처리를 통해 오류를 방지합니다.
