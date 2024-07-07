@@ -22,15 +22,4 @@ public enum InputMenu {
                 .findAny()
                 .orElse(OTHERWISE);
     }
-
-//    public static InputMenu getInputMenu(String input) {
-//
-//        for (InputMenu inputMenu : values()) {
-//            if (inputMenu.input.equals(input)) {
-//                return inputMenu;
-//            }
-//        }
-//
-//        return OTHERWISE;
-//    }
 }
