@@ -2,6 +2,8 @@ package org.homework.view;
 
 import org.homework.domain.Todo;
 
+import java.util.List;
+
 public class OutputView {
 
     // todoMethod
@@ -28,15 +30,38 @@ public class OutputView {
         todoInfo(todo);
     }
 
-    public void todoInfo(Todo todo) {
-        String completeStatus = (todo.isCompleted()) ? "완료" : "미완료";
-
-        System.out.printf("할 일 ID: %d 내용: %s 상태: %s\n\n",
-                todo.getId(), todo.getContent(), completeStatus);
+    public void weekTodoInfo(List<Todo> weekTodoList) {
+        todoInfoTitle();
+        weekTodoList.forEach(System.out::print);
+        System.out.println();
     }
 
-    public void getNullTodo() {
+    public void searchTodoInfo(List<Todo> searchTodoList) {
+        todoInfoTitle();
+        searchTodoList.forEach(System.out::print);
+        System.out.println();
+    }
+
+    public void getEmptyTodo() {
         System.out.println("해당 ID의 할 일이 없습니다.\n");
+    }
+
+    public void getEmptyWeekTodo() {
+        System.out.println("7일 이내 할 일이 없습니다.\n");
+    }
+
+    public void getEmptySearchTodo() {
+        System.out.println("검색 결과가 없습니다.\n");
+    }
+
+    private void todoInfoTitle() {
+        System.out.printf(Todo.TODO_FORMAT, "ID", "내용", "상태", "마감일");
+        System.out.println("--------------------------------------------------");
+    }
+
+    private void todoInfo(Todo todo) {
+        todoInfoTitle();
+        System.out.println(todo);
     }
 
     // menuMethod

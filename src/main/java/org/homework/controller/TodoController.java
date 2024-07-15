@@ -2,9 +2,12 @@ package org.homework.controller;
 
 import org.homework.domain.InputMenu;
 import org.homework.domain.Todo;
+import org.homework.dto.AddTodoInput;
 import org.homework.service.TodoService;
 import org.homework.view.InputView;
 import org.homework.view.OutputView;
+
+import java.util.List;
 
 public class TodoController {
 
@@ -15,6 +18,8 @@ public class TodoController {
     InputMenu menu;
     int todoId;
     Todo todo;
+    AddTodoInput addTodoInput;
+    String keyword;
 
     public void run() {
 
@@ -24,40 +29,86 @@ public class TodoController {
 
             switch (menu) {
                 case ADD:
-                    String content = inputView.addTodo();
-                    todoId = todoService.addTodo(content);
+                    addTodoInput = inputView.addTodo();
+
+                    try {
+                        todoId = todoService.addTodo(addTodoInput);
+                    } catch (Exception e) {
+                        outputView.invalidInput();
+                        break;
+                    }
 
                     outputView.addTodo(todoId);
                     break;
 
                 case DELETE:
-                    todoId = inputView.deleteTodo();
+                    try {
+                        todoId = inputView.deleteTodo();
+                    } catch (Exception e) {
+                        outputView.invalidInput();
+                        break;
+                    }
+
                     boolean isDeleted = todoService.deleteTodo(todoId);
 
                     if (isDeleted) {
                         outputView.deleteTodo(todoId);
                     } else {
-                        outputView.getNullTodo();
+                        outputView.getEmptyTodo();
                     }
                     break;
 
                 case VIEW:
-                    todoId = inputView.getTodo();
-                    todo = todoService.getTodo(todoId);
+                    try {
+                        todoId = inputView.getTodo();
+                    } catch (Exception e) {
+                        outputView.invalidInput();
+                        break;
+                    }
 
-                    if (todo != null) {
-                        outputView.getTodo(todo);
+                    try {
+                        todo = todoService.getTodo(todoId);
+                    } catch (Exception e) {
+                        outputView.getEmptyTodo();
+                        break;
+                    }
+
+                    outputView.getTodo(todo);
+                    break;
+
+                case WEEK_VIEW:
+                    List<Todo> weekTodoList = todoService.getWeekTodo();
+
+                    if (!weekTodoList.isEmpty()) {
+                        outputView.weekTodoInfo(weekTodoList);
                     } else {
-                        outputView.getNullTodo();
+                        outputView.getEmptyWeekTodo();
+                    }
+                    break;
+
+                case SEARCH:
+                    keyword = inputView.writeSearchKeyword();
+                    List<Todo> searchTodoList = todoService.getSearchTodo(keyword);
+
+                    if (!searchTodoList.isEmpty()) {
+                        outputView.searchTodoInfo(searchTodoList);
+                    } else {
+                        outputView.getEmptySearchTodo();
                     }
                     break;
 
                 case UPDATE:
-                    todoId = inputView.updateTodo();
-                    todo = todoService.getTodo(todoId);
+                    try {
+                        todoId = inputView.updateTodo();
+                    } catch (Exception e) {
+                        outputView.invalidInput();
+                        break;
+                    }
 
-                    if (todo == null) {
-                        outputView.getNullTodo();
+                    try {
+                        todo = todoService.getTodo(todoId);
+                    } catch (Exception e) {
+                        outputView.getEmptyTodo();
                         break;
                     }
 

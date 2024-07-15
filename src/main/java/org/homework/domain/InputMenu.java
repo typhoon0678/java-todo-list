@@ -6,8 +6,10 @@ public enum InputMenu {
     ADD("1"),
     DELETE("2"),
     VIEW("3"),
-    UPDATE("4"),
-    EXIT("5"),
+    WEEK_VIEW("4"),
+    SEARCH("5"),
+    UPDATE("6"),
+    EXIT("7"),
     OTHERWISE("");
 
     private final String input;
