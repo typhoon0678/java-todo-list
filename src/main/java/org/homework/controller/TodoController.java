@@ -7,7 +7,9 @@ import org.homework.service.TodoService;
 import org.homework.view.InputView;
 import org.homework.view.OutputView;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TodoController {
 
@@ -15,120 +17,112 @@ public class TodoController {
     private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
 
-    InputMenu menu;
-    int todoId;
-    Todo todo;
-    AddTodoInput addTodoInput;
-    String keyword;
+    private Todo todo;
+    private int todoId;
 
     public void run() {
+
+        InputMenu menu;
 
         do {
             String menuValue = inputView.selectMenu();
             menu = InputMenu.getInputMenu(menuValue);
 
-            switch (menu) {
-                case ADD:
-                    addTodoInput = inputView.addTodo();
-
-                    try {
-                        todoId = todoService.addTodo(addTodoInput);
-                    } catch (Exception e) {
+            try {
+                switch (menu) {
+                    case ADD:
+                        addTodo();
+                        break;
+                    case DELETE:
+                        deleteTodo();
+                        break;
+                    case VIEW:
+                        viewTodo();
+                        break;
+                    case WEEK_VIEW:
+                        weekViewTodo();
+                        break;
+                    case SEARCH:
+                        searchTodo();
+                        break;
+                    case UPDATE:
+                        updateTodo();
+                        break;
+                    case EXIT:
+                        outputView.exit();
+                        break;
+                    case OTHERWISE:
                         outputView.invalidInput();
-                        break;
-                    }
+                }
 
-                    outputView.addTodo(todoId);
-                    break;
-
-                case DELETE:
-                    try {
-                        todoId = inputView.deleteTodo();
-                    } catch (Exception e) {
-                        outputView.invalidInput();
-                        break;
-                    }
-
-                    boolean isDeleted = todoService.deleteTodo(todoId);
-
-                    if (isDeleted) {
-                        outputView.deleteTodo(todoId);
-                    } else {
-                        outputView.getEmptyTodo();
-                    }
-                    break;
-
-                case VIEW:
-                    try {
-                        todoId = inputView.getTodo();
-                    } catch (Exception e) {
-                        outputView.invalidInput();
-                        break;
-                    }
-
-                    try {
-                        todo = todoService.getTodo(todoId);
-                    } catch (Exception e) {
-                        outputView.getEmptyTodo();
-                        break;
-                    }
-
-                    outputView.getTodo(todo);
-                    break;
-
-                case WEEK_VIEW:
-                    List<Todo> weekTodoList = todoService.getWeekTodo();
-
-                    if (!weekTodoList.isEmpty()) {
-                        outputView.weekTodoInfo(weekTodoList);
-                    } else {
-                        outputView.getEmptyWeekTodo();
-                    }
-                    break;
-
-                case SEARCH:
-                    keyword = inputView.writeSearchKeyword();
-                    List<Todo> searchTodoList = todoService.getSearchTodo(keyword);
-
-                    if (!searchTodoList.isEmpty()) {
-                        outputView.searchTodoInfo(searchTodoList);
-                    } else {
-                        outputView.getEmptySearchTodo();
-                    }
-                    break;
-
-                case UPDATE:
-                    try {
-                        todoId = inputView.updateTodo();
-                    } catch (Exception e) {
-                        outputView.invalidInput();
-                        break;
-                    }
-
-                    try {
-                        todo = todoService.getTodo(todoId);
-                    } catch (Exception e) {
-                        outputView.getEmptyTodo();
-                        break;
-                    }
-
-                    boolean isUpdated = todoService.updateTodo(todo);
-                    if (isUpdated) {
-                        outputView.updateCompleteTrue(todo);
-                    } else {
-                        outputView.keepCompleteTrue(todo);
-                    }
-                    break;
-
-                case EXIT:
-                    outputView.exit();
-                    break;
-
-                case OTHERWISE:
-                    outputView.invalidInput();
+            } catch (NoSuchElementException e) {
+                outputView.getEmptyTodo();
+            } catch (IllegalArgumentException e) {
+                outputView.invalidInput();
+            } catch (DateTimeParseException e) {
+                outputView.invalidDateInput();
             }
 
         } while (!InputMenu.isExit(menu));
 
+    }
+
+    private void addTodo() {
+        AddTodoInput addTodoInput = inputView.addTodo();
+
+        todoId = todoService.addTodo(addTodoInput);
+
+        outputView.addTodo(todoId);
+    }
+
+    private void deleteTodo() {
+        todoId = inputView.deleteTodo();
+
+        todoService.deleteTodo(todoId);
+
+        outputView.deleteTodo(todoId);
+    }
+
+    private void viewTodo() {
+        todoId = inputView.getTodo();
+
+        todo = todoService.getTodo(todoId);
+
+        outputView.getTodo(todo);
+    }
+
+    private void weekViewTodo() {
+        List<Todo> weekTodoList = todoService.getWeekTodo();
+
+        if (!weekTodoList.isEmpty()) {
+            outputView.weekTodoInfo(weekTodoList);
+        } else {
+            outputView.getEmptyWeekTodo();
+        }
+    }
+
+    private void searchTodo() {
+        String keyword = inputView.writeSearchKeyword();
+
+        List<Todo> searchTodoList = todoService.getSearchTodo(keyword);
+
+        if (!searchTodoList.isEmpty()) {
+            outputView.searchTodoInfo(searchTodoList);
+        } else {
+            outputView.getEmptySearchTodo();
+        }
+    }
+
+    private void updateTodo() {
+        todoId = inputView.updateTodo();
+
+        todo = todoService.getTodo(todoId);
+        boolean isUpdated = todoService.updateTodo(todo);
+
+        if (isUpdated) {
+            outputView.updateCompleteTrue(todo);
+        } else {
+            outputView.keepCompleteTrue(todo);
+        }
     }
 }

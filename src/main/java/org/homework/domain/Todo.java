@@ -22,10 +22,6 @@ public class Todo {
         return id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public LocalDate getDeadline() {
         return deadline;
     }
@@ -38,11 +34,18 @@ public class Todo {
         return completed ? "완료" : "미완료";
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setCompletedTrue() {
+        this.completed = true;
     }
 
     public String toString() {
         return String.format(TODO_FORMAT, id, content, getCompletedStr(), deadline);
+    }
+
+    public boolean isContainKeyword(String keyword) {
+        String contentLower = content.toLowerCase();
+        String keywordLower = keyword.toLowerCase();
+
+        return contentLower.contains(keywordLower);
     }
 }

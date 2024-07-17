@@ -20,8 +20,9 @@ public class TodoService {
         return TodoRepository.addTodo(content, endDate);
     }
 
-    public boolean deleteTodo(int todoId) {
-        return TodoRepository.deleteTodo(todoId).isPresent();
+    public void deleteTodo(int todoId) {
+        TodoRepository.deleteTodo(todoId)
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public Todo getTodo(int todoId) {

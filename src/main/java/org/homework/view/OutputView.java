@@ -73,4 +73,8 @@ public class OutputView {
     public void invalidInput() {
         System.out.println("잘못된 입력입니다.\n");
     }
+
+    public void invalidDateInput() {
+        System.out.println("잘못된 날짜 형식 입력입니다.\n");
+    }
 }

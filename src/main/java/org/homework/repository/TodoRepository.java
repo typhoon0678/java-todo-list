@@ -26,7 +26,7 @@ public class TodoRepository {
     public static List<Todo> getWeekTodoList() {
         LocalDate today = LocalDate.now();
 
-        return new ArrayList<>(todoMap.values()).stream()
+        return todoMap.values().stream()
                 .filter(todo -> {
                     long betweenDays = today.until(todo.getDeadline(), ChronoUnit.DAYS);
                     return betweenDays >= 0 && betweenDays <= 7;
@@ -36,12 +36,8 @@ public class TodoRepository {
     }
 
     public static List<Todo> getSearchTodoList(String keyword) {
-        return new ArrayList<>(todoMap.values()).stream()
-                .filter(todo -> {
-                    String contentLower = todo.getContent().toLowerCase();
-                    String keywordLower = keyword.toLowerCase();
-                    return contentLower.contains(keywordLower);
-                })
+        return todoMap.values().stream()
+                .filter(todo -> todo.isContainKeyword(keyword))
                 .sorted(Comparator.comparing(Todo::getDeadline))
                 .collect(Collectors.toList());
     }
@@ -50,7 +46,7 @@ public class TodoRepository {
     public static void updateTodoComplete(int todoId) {
         Todo todo = todoMap.get(todoId);
 
-        todo.setCompleted(true);
+        todo.setCompletedTrue();
         todoMap.put(todoId, todo);
     }
 
