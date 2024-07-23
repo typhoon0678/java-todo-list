@@ -13,9 +13,15 @@ import java.util.NoSuchElementException;
 
 public class TodoController {
 
-    private final TodoService todoService = new TodoService();
-    private final InputView inputView = new InputView();
-    private final OutputView outputView = new OutputView();
+    private final TodoService todoService;
+    private final InputView inputView;
+    private final OutputView outputView;
+
+    public TodoController(TodoService todoService, InputView inputView, OutputView outputView) {
+        this.todoService = todoService;
+        this.inputView = inputView;
+        this.outputView = outputView;
+    }
 
     private Todo todo;
     private int todoId;
