@@ -3,6 +3,7 @@ package org.homework.controller;
 import org.homework.domain.InputMenu;
 import org.homework.domain.Todo;
 import org.homework.dto.AddTodoInput;
+import org.homework.dto.UpdateTodoOutput;
 import org.homework.service.TodoService;
 import org.homework.view.InputView;
 import org.homework.view.OutputView;
@@ -13,9 +14,15 @@ import java.util.NoSuchElementException;
 
 public class TodoController {
 
-    private final TodoService todoService = new TodoService();
-    private final InputView inputView = new InputView();
-    private final OutputView outputView = new OutputView();
+    private final TodoService todoService;
+    private final InputView inputView;
+    private final OutputView outputView;
+
+    public TodoController(TodoService todoService, InputView inputView, OutputView outputView) {
+        this.todoService = todoService;
+        this.inputView = inputView;
+        this.outputView = outputView;
+    }
 
     private Todo todo;
     private int todoId;
@@ -115,11 +122,11 @@ public class TodoController {
 
     private void updateTodo() {
         todoId = inputView.updateTodo();
+        Todo todo = todoService.getTodo(todoId);
 
-        todo = todoService.getTodo(todoId);
-        boolean isUpdated = todoService.updateTodo(todo);
+        UpdateTodoOutput updateTodoOutput = todoService.updateTodo(todo);
 
-        if (isUpdated) {
+        if (updateTodoOutput.isUpdated()) {
             outputView.updateCompleteTrue(todo);
         } else {
             outputView.keepCompleteTrue(todo);

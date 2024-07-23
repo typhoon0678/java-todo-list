@@ -3,54 +3,20 @@ package org.homework.repository;
 import org.homework.domain.Todo;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
-public class TodoRepository {
+public interface TodoRepository {
 
-    private static int seq = 0;
-    private static final Map<Integer, Todo> todoMap = new HashMap<>();
+    int addTodo(String content, LocalDate endDate);
 
-    public static int addTodo(String content, LocalDate endDate) {
-        Todo todo = new Todo(++seq, content, endDate);
+    Optional<Todo> getTodo(int todoId);
 
-        todoMap.put(todo.getId(), todo);
-        return todo.getId();
-    }
+    List<Todo> getWeekTodoList();
 
-    public static Optional<Todo> getTodo(int todoId) {
-        return Optional.ofNullable(todoMap.get(todoId));
-    }
+    List<Todo> getSearchTodoList(String keyword);
 
-    public static List<Todo> getWeekTodoList() {
-        LocalDate today = LocalDate.now();
+    boolean updateTodoComplete(int todoId);
 
-        return todoMap.values().stream()
-                .filter(todo -> {
-                    long betweenDays = today.until(todo.getDeadline(), ChronoUnit.DAYS);
-                    return betweenDays >= 0 && betweenDays <= 7;
-                })
-                .sorted(Comparator.comparing(Todo::getDeadline))
-                .collect(Collectors.toList());
-    }
-
-    public static List<Todo> getSearchTodoList(String keyword) {
-        return todoMap.values().stream()
-                .filter(todo -> todo.isContainKeyword(keyword))
-                .sorted(Comparator.comparing(Todo::getDeadline))
-                .collect(Collectors.toList());
-    }
-
-
-    public static void updateTodoComplete(int todoId) {
-        Todo todo = todoMap.get(todoId);
-
-        todo.setCompletedTrue();
-        todoMap.put(todoId, todo);
-    }
-
-    public static Optional<Todo> deleteTodo(int todoId) {
-        return Optional.ofNullable(todoMap.remove(todoId));
-    }
+    Optional<Todo> deleteTodo(int todoId);
 }

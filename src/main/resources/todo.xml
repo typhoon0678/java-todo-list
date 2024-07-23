@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.homework">
+
+    <insert id="addTodo" parameterType="Todo"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO jhta_todo (content, deadline) VALUES (
+            #{content},
+            #{deadline}
+        )
+    </insert>
+
+    <select id="getTodoById" resultType="Todo" parameterType="int">
+        SELECT * FROM jhta_todo WHERE id = #{id}
+    </select>
+
+    <delete id="deleteTodoById" parameterType="int">
+        DELETE FROM jhta_todo WHERE id = #{id}
+    </delete>
+
+    <select id="getWeekTodoList" resultType="Todo">
+        SELECT * FROM jhta_todo t
+            WHERE DATEDIFF(t.deadline, CURRENT_DATE()) BETWEEN 0 AND 7
+            ORDER BY t.deadline DESC
+    </select>
+
+    <select id="getSearchTodoList" resultType="Todo" parameterType="String">
+        SELECT * FROM jhta_todo t
+            WHERE t.content LIKE '%'||#{content}||'%'
+            ORDER BY t.deadline DESC
+    </select>
+
+    <update id="completeTodoById" parameterType="int">
+        UPDATE jhta_todo SET completed = true
+            WHERE id = #{id} AND completed = false
+    </update>
+
+</mapper>

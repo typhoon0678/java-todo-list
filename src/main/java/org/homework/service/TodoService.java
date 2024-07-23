@@ -2,6 +2,7 @@ package org.homework.service;
 
 import org.homework.domain.Todo;
 import org.homework.dto.AddTodoInput;
+import org.homework.dto.UpdateTodoOutput;
 import org.homework.repository.TodoRepository;
 
 import java.time.LocalDate;
@@ -11,39 +12,43 @@ import java.util.NoSuchElementException;
 
 public class TodoService {
 
+    private final TodoRepository todoRepository;
+
+    public TodoService(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
+
     public int addTodo(AddTodoInput addTodoInput) {
         String content = addTodoInput.getContent();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         LocalDate endDate = LocalDate.parse(addTodoInput.getDateStr(), formatter);
 
-        return TodoRepository.addTodo(content, endDate);
+        return todoRepository.addTodo(content, endDate);
     }
 
     public void deleteTodo(int todoId) {
-        TodoRepository.deleteTodo(todoId)
+        todoRepository.deleteTodo(todoId)
                 .orElseThrow(NoSuchElementException::new);
     }
 
     public Todo getTodo(int todoId) {
-        return TodoRepository.getTodo(todoId)
+        return todoRepository.getTodo(todoId)
                 .orElseThrow(NoSuchElementException::new);
     }
 
     public List<Todo> getWeekTodo() {
-        return TodoRepository.getWeekTodoList();
+        return todoRepository.getWeekTodoList();
     }
 
     public List<Todo> getSearchTodo(String keyword) {
-        return TodoRepository.getSearchTodoList(keyword);
+        return todoRepository.getSearchTodoList(keyword);
     }
 
-    public boolean updateTodo(Todo todo) {
-        if (!todo.isCompleted()) {
-            TodoRepository.updateTodoComplete(todo.getId());
-            return true;
-        }
+    public UpdateTodoOutput updateTodo(Todo todo) {
+        boolean isUpdated = todoRepository.updateTodoComplete(todo.getId());
+        if (isUpdated) todo.complete();
 
-        return false;
+        return new UpdateTodoOutput(todo, isUpdated);
     }
 }

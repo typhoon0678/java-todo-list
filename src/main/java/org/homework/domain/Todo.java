@@ -4,18 +4,34 @@ import java.time.LocalDate;
 
 public class Todo {
 
-    private final int id;
-    private final String content;
-    private final LocalDate deadline;
+    private int id;
+    private String content;
+    private LocalDate deadline;
     private boolean completed;
 
     public static final String TODO_FORMAT = "%-4s%-20s%-10s%-15s\n";
+
+    public Todo(int id, String content, LocalDate deadline, boolean completed) {
+        this.id = id;
+        this.content = content;
+        this.deadline = deadline;
+        this.completed = completed;
+    }
 
     public Todo(int id, String content, LocalDate deadline) {
         this.id = id;
         this.content = content;
         this.deadline = deadline;
         this.completed = false;
+    }
+
+    public Todo(String content, LocalDate deadline) {
+        this.content = content;
+        this.deadline = deadline;
+    }
+
+    public Todo(int id) {
+        this.id = id;
     }
 
     public int getId() {
@@ -34,7 +50,7 @@ public class Todo {
         return completed ? "완료" : "미완료";
     }
 
-    public void setCompletedTrue() {
+    public void complete() {
         this.completed = true;
     }
 
@@ -42,7 +58,7 @@ public class Todo {
         return String.format(TODO_FORMAT, id, content, getCompletedStr(), deadline);
     }
 
-    public boolean isContainKeyword(String keyword) {
+    public boolean contains(String keyword) {
         String contentLower = content.toLowerCase();
         String keywordLower = keyword.toLowerCase();
 
